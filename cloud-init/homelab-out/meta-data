@@ -1,0 +1,3 @@
+instance-id: homelab-out
+local-hostname: homelab-out
+hostname: homelab-out
