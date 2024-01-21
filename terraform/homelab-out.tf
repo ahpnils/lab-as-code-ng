@@ -31,7 +31,7 @@ resource "libvirt_domain" "homelab-out" {
   # eth0
   network_interface {
     macvtap = "enp4s0f0"
-    # addresses  = ["192.168.6.35"]
+    mac = var.homelab-out_mac
   }
 
   # eth1

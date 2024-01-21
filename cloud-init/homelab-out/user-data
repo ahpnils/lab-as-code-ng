@@ -4,20 +4,41 @@ fqdn: homelab-out.homelab.home.arpa
 
 users:
   - name: nils
-    uid: "5001"
-    gid: "5001"
-    primary_group: nils
+    uid: 5001
+    # gid does not exist
     groups: users,wheel
     lock_passwd: false
     plain_text_passwd: password
-    ssh_authorized_keys: 
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL nils@bloodhoof.anotherhomepage.loc
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
+          nils@bloodhoof.anotherhomepage.loc
+    sudo: ALL=(ALL) NOPASSWD:ALL
 write_files:
- - content: 'vm.swappiness = 5'
-   owner: root:root
-   permissions: '0644'
-   path: /etc/sysctl.d/98-swappiness.conf
+  - path: /etc/sysctl.d/98-swappiness.conf
+    content: 'vm.swappiness = 5'
+    owner: root:root
+    permissions: '0644'
+  - path: /etc/network/interfaces
+    owner: root:root
+    permissions: '0644'
+    content: |
+      auto lo
+      iface lo inet loopback
+
+      auto eth0
+        iface eth0 inet dhcp
+
+      auto eth1
+        iface eth1 inet static
+        address 192.168.99.2
+        netmask 255.255.255.0
+
+runcmd:
+  - sysctl -p /etc/sysctl.d/98-swappiness.conf
+  - rc-service networking restart
 packages:
- - bash-completion
- - rsync
+  - bash-completion
+  - rsync
+  - sudo
+
+final_message: "homelab-out is ready for action !"

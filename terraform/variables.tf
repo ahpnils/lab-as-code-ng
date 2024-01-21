@@ -14,4 +14,6 @@ variable "libvirt_uri" {
   default = "qemu:///system"
 }
 
-
+variable "homelab-out_mac" {
+  default = "52:54:00:ca:59:85"
+}
