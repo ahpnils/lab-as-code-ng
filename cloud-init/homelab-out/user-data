@@ -15,7 +15,11 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
 write_files:
   - path: /etc/sysctl.d/98-swappiness.conf
-    content: 'vm.swappiness = 5'
+    content: 'vm.swappiness = 1'
+    owner: root:root
+    permissions: '0644'
+  - path: /etc/sysctl.d/99-ip_forward.conf
+    content: 'net.ipv4.ip_forward = 1'
     owner: root:root
     permissions: '0644'
   - path: /etc/network/interfaces
@@ -30,15 +34,52 @@ write_files:
 
       auto eth1
         iface eth1 inet static
-        address 192.168.99.2
+        address 10.99.99.2
         netmask 255.255.255.0
+  - path: /etc/nftables.d/nat.nft
+    owner: root:root
+    permissions: '0644'
+    content: |
+      #!/usr/sbin/nft -f
+      table inet filter {
+        chain input {
+          tcp dport 22 accept
+        }
+        chain forward {
+          iifname "eth0" oifname "eth1" accept;
+          iifname "eth1" oifname "eth0" accept;
+        }
+      }
+      table ip nat {
+        chain PREROUTING {
+          type nat hook prerouting priority filter; policy accept;
+        }
+        chain POSTROUTING {
+          type nat hook postrouting priority srcnat; policy accept;
+          oifname "eth0" masquerade
+        }
+      }
+      table nat {
+        chain prerouting {
+          type nat hook prerouting priority dstnat;
+          iif eth0 tcp dport 2222 dnat to 10.99.99.12:22
+          iif eth0 tcp dport 80 dnat to 10.99.99.12
+        }
+        chain postrouting {
+          type nat hook postrouting priority srcnat;
+          oif eth0 masquerade
+        }
+      }
 
 runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
+  - sysctl -p /etc/sysctl.d/99-ip_forward.conf
   - rc-service networking restart
+  - rc-service nftables restart
 packages:
   - bash-completion
   - rsync
   - sudo
+  - nftables
 
 final_message: "homelab-out is ready for action !"
