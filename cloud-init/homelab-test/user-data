@@ -1,0 +1,50 @@
+#cloud-config
+
+fqdn: homelab-test.homelab.home.arpa
+
+users:
+  - name: nils
+    uid: 5001
+    # gid does not exist
+    groups: users,wheel
+    lock_passwd: false
+    plain_text_passwd: password
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
+          nils@bloodhoof.anotherhomepage.loc
+    sudo: ALL=(ALL) NOPASSWD:ALL
+write_files:
+  - path: /etc/sysctl.d/98-swappiness.conf
+    content: 'vm.swappiness = 1'
+    owner: root:root
+    permissions: '0644'
+  - path: /etc/resolv.conf
+    owner: root:root
+    permissions: '0644'
+    content: |
+      domain homelab.home.arpa
+      search homelab.home.arpa
+      nameserver 192.168.6.254
+  - path: /etc/network/interfaces
+    owner: root:root
+    permissions: '0644'
+    content: |
+      auto lo
+      iface lo inet loopback
+
+      auto eth0
+        iface eth0 inet static
+        address 10.99.99.12
+        netmask 255.255.255.0
+        gateway 10.99.99.2
+
+runcmd:
+  - sysctl -p /etc/sysctl.d/98-swappiness.conf
+  - rc-service networking restart
+
+#packages:
+#  - bash-completion
+#  - rsync
+#  - sudo
+
+final_message: "homelab-test is ready for action !"

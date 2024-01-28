@@ -1,0 +1,3 @@
+instance-id: homelab-test
+local-hostname: homelab-test
+hostname: homelab-test
