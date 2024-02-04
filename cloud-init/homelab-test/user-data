@@ -42,9 +42,11 @@ runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
   - rc-service networking restart
 
-#packages:
-#  - bash-completion
-#  - rsync
-#  - sudo
+packages:
+  - bash-completion
+  - rsync
+  - sudo
+  - tmux
+  - podman
 
 final_message: "homelab-test is ready for action !"

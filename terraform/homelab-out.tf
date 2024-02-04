@@ -1,28 +1,29 @@
 resource "libvirt_volume" "homelab-out_vol" {
-  name = "homelab-out.qcow2"
-  pool = var.images_pool
+  name           = "homelab-out.qcow2"
+  pool           = var.images_pool
+  size           = 10240000000 # size is in bytes
   base_volume_id = libvirt_volume.alpine_image.id
 }
 
 resource "libvirt_cloudinit_disk" "homelab-out_cinit" {
-  name = "homelab-out-commoninit.iso"
-  pool = var.boot_pool
+  name      = "homelab-out-commoninit.iso"
+  pool      = var.boot_pool
   meta_data = data.template_file.homelab-out_metadata.rendered
   user_data = data.template_file.homelab-out_userdata.rendered
 }
 
-data "template_file" "homelab-out_metadata" {                                       
-  template = file("../cloud-init/homelab-out/meta-data")                            
-}                                                                                
-                                                                                 
-data "template_file" "homelab-out_userdata" {                                       
-  template = file("../cloud-init/homelab-out/user-data")                            
+data "template_file" "homelab-out_metadata" {
+  template = file("../cloud-init/homelab-out/meta-data")
+}
+
+data "template_file" "homelab-out_userdata" {
+  template = file("../cloud-init/homelab-out/user-data")
 }
 
 resource "libvirt_domain" "homelab-out" {
-  name = "homelab-out"
+  name   = "homelab-out"
   memory = "512"
-  vcpu = "1"
+  vcpu   = "1"
   cpu {
     mode = "host-passthrough"
   }
@@ -31,7 +32,7 @@ resource "libvirt_domain" "homelab-out" {
   # eth0
   network_interface {
     macvtap = "enp4s0f0"
-    mac = var.homelab-out_mac
+    mac     = var.homelab-out_mac
   }
 
   # eth1
@@ -63,3 +64,7 @@ resource "libvirt_domain" "homelab-out" {
 
 }
 
+resource "time_sleep" "wait_for_homelab-out" {
+  depends_on      = [libvirt_domain.homelab-out]
+  create_duration = "90s"
+}

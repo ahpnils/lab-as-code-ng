@@ -74,6 +74,7 @@ write_files:
 runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
   - sysctl -p /etc/sysctl.d/99-ip_forward.conf
+  - rc-update add nftables default
   - rc-service networking restart
   - rc-service nftables restart
 packages:
@@ -81,5 +82,6 @@ packages:
   - rsync
   - sudo
   - nftables
+  - tmux
 
 final_message: "homelab-out is ready for action !"
