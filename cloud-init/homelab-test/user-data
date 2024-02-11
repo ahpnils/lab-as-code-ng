@@ -47,6 +47,7 @@ packages:
   - rsync
   - sudo
   - tmux
-  - podman
+  - curl
+  - bind-tools
 
 final_message: "homelab-test is ready for action !"
