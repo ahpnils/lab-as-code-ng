@@ -22,9 +22,8 @@ write_files:
     owner: root:root
     permissions: '0644'
     content: |
-      domain homelab.home.arpa
-      search homelab.home.arpa
-      nameserver 192.168.6.254
+      nameserver 80.67.169.12
+      nameserver 80.67.169.40
   - path: /etc/network/interfaces
     owner: root:root
     permissions: '0644'
@@ -51,11 +50,14 @@ packages:
   - sudo
   - tmux
   - podman
+  - vim
+  - tcpdump
 
 runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
   - rc-service networking restart
   - rc-update add cgroups
+  - rc-update add podman
   - rc-service cgroups start
   - podman run -d --privileged --name pihole --env-file=/etc/containers/pihole.env -p 53:53/tcp -p 53:53/udp -p 80:80 --network=host -v etc-pihole:/etc/pihole --restart=always --hostname homelab-hole pihole/pihole:latest
 

@@ -48,28 +48,22 @@ write_files:
         chain forward {
           iifname "eth0" oifname "eth1" accept;
           iifname "eth1" oifname "eth0" accept;
-        }
-      }
-      table ip nat {
-        chain PREROUTING {
-          type nat hook prerouting priority filter; policy accept;
-        }
-        chain POSTROUTING {
-          type nat hook postrouting priority srcnat; policy accept;
-          oifname "eth0" masquerade
+          iifname "wg0" oifname "eth1" accept;
+          iifname "eth1" oifname "wg0" accept;
         }
       }
       table nat {
         chain prerouting {
-          type nat hook prerouting priority dstnat;
+          type nat hook prerouting priority dstnat; policy accept;
           iif eth0 tcp dport 2222 dnat to 10.99.99.12:22
           iif eth0 tcp dport 2203 dnat to 10.99.99.3:22
           iif eth0 tcp dport 80 dnat to 10.99.99.12
           iif eth0 tcp dport 8003 dnat to 10.99.99.3:80
         }
         chain postrouting {
-          type nat hook postrouting priority srcnat;
-          oif eth0 masquerade
+          type nat hook postrouting priority srcnat; policy accept;
+          oifname "eth0" masquerade
+          oifname "wg0" masquerade
         }
       }
 
@@ -85,5 +79,9 @@ packages:
   - sudo
   - nftables
   - tmux
+  - vim
+  - tcpdump
+  - wireguard-tools-wg-quick
+
 
 final_message: "homelab-out is ready for action !"

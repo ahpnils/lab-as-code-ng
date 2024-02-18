@@ -24,7 +24,7 @@ write_files:
     content: |
       domain homelab.home.arpa
       search homelab.home.arpa
-      nameserver 192.168.6.254
+      nameserver 10.99.99.3
   - path: /etc/network/interfaces
     owner: root:root
     permissions: '0644'
@@ -49,5 +49,7 @@ packages:
   - tmux
   - curl
   - bind-tools
+  - vim
+  - tcpdump
 
 final_message: "homelab-test is ready for action !"
