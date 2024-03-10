@@ -55,10 +55,10 @@ write_files:
       table nat {
         chain prerouting {
           type nat hook prerouting priority dstnat; policy accept;
-          iif eth0 tcp dport 2222 dnat to 10.99.99.12:22
-          iif eth0 tcp dport 2203 dnat to 10.99.99.3:22
-          iif eth0 tcp dport 80 dnat to 10.99.99.12
-          iif eth0 tcp dport 8003 dnat to 10.99.99.3:80
+          tcp dport 8080 dnat to 10.99.99.12:8080
+          tcp dport 2222 dnat to 10.99.99.12:22
+          tcp dport 2203 dnat to 10.99.99.3:22
+          tcp dport 8003 dnat to 10.99.99.3:80
         }
         chain postrouting {
           type nat hook postrouting priority srcnat; policy accept;
