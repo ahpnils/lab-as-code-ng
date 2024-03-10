@@ -1,0 +1,22 @@
+---
+# tasks file for ahp-wireguard
+
+- name: "Install required packages"
+  tags:
+    - packages
+  ansible.builtin.package:
+    name: "{{ ahp_wg_pkg_list }}"
+    state: present
+
+- name: "Deploy config file - {{ ahp_wg_type }}"
+  ansible.builtin.template:
+    src: "templates/wg-{{ ahp_wg_type }}.j2"
+    dest: "/etc/wireguard/wg0.conf"
+
+# - name: Display the JSON file content 
+#  shell: cat config.json 
+#  register: result 
+
+# - name: save the Json data to a Variable as a Fact 
+#  set_fact: 
+#    jsondata: "{{ result.stdout | from_json }}"

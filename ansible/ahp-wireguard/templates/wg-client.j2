@@ -1,0 +1,8 @@
+[Interface]
+PrivateKey = {{ ahp_wg_client_privkey }}
+Address = {{ ahp_wg_client_priv_ip }}
+[Peer]
+PublicKey = {{ ahp_wg_server_pubkey }}
+Endpoint = {{ ahp_wg_server_pub_ip }}
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 20

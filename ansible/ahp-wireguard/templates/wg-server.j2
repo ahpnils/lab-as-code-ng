@@ -1,0 +1,6 @@
+[Interface]
+PrivateKey = {{ ahp_wg_server_pub_ip }}
+ListenPort = {{ ahp_wg_server_port }}
+[Peer]
+PublicKey = {{ ahp_wg_client_pubkey }}
+AllowedIPs = 0.0.0.0/0

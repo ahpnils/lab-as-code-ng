@@ -1,0 +1,11 @@
+---
+# vars file for ahp-wireguard
+ahp_wg_pkg_list: "wireguard-tools-wg-quick"
+# ahp_wg_client_privkey:
+# ahp_wg_client_pubkey:
+# ahp_wg_server_privkey:
+# ahp_wg_server_pubkey:
+ahp_wg_server_pub_ip: "212.83.149.93"
+ahp_wg_server_port: "51820"
+ahp_wg_client_priv_ip: "212.83.149.93"
+ahp_wg_type: ""
