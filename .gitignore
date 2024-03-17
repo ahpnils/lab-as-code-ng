@@ -46,6 +46,15 @@ ansible/galaxy_cache
 # Ignore Galaxy token
 ansible/galaxy_token
 
+# Ignore Ansible log file
+ansible/ansible.log
+
+# Ignore Ansible Inventory
+ansible/inventory.ini
+
+# Ignore Wireguard's private and public keys
+ansible/*.key
+ansible/*.pub
 # Ignore temporary vim files
 .*.swp
 # Ignore vim backup files
