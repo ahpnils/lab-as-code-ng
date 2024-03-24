@@ -33,3 +33,48 @@
     owner: "root"
     group: "root"
     mode: "0600"
+
+- name: "Set up wg0 interface IP address"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "address"
+    value: "{{ ahp_wg_priv_ip }}"
+    state: present
+  register: wg0_cfg
+
+- name: "Set up wg0 interface pre-up 1"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "ip link add dev wg0 type wireguard"
+    state: present
+  when: ahp_wg_type == "server"
+
+- name: "Set up wg0 interface pre-up 2"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "wg setconf wg0 /etc/wireguard/wg0.conf"
+    state: present
+  when: ahp_wg_type == "server"
+
+- name: "Set up wg0 interface pre-up"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "wg-quick up $IFACE"
+    state: present
+  when: ahp_wg_type == "client"
+
+- name: "Set up wg0 interface post-down"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "post-down"
+    value: "wg-quick up $IFACE"
+    state: present
+  when: ahp_wg_type == "client"
