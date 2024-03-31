@@ -12,9 +12,9 @@ resource "libvirt_network" "homelab-main" {
     enabled = false
   }
   dnsmasq_options {
-   options {
-     option_name  = "dhcp-option"
-     option_value = "3,10.99.99.2"
-   }
+    options {
+      option_name  = "dhcp-option"
+      option_value = "3,10.99.99.2"
+    }
   }
 }

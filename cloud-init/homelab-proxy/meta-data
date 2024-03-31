@@ -1,0 +1,3 @@
+instance-id: homelab-proxy
+local-hostname: homelab-proxy
+hostname: homelab-proxy

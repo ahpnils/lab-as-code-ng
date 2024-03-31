@@ -58,6 +58,8 @@ write_files:
           tcp dport 8080 dnat to 10.99.99.12:8080
           tcp dport 2222 dnat to 10.99.99.12:22
           tcp dport 2203 dnat to 10.99.99.3:22
+          tcp dport 2204 dnat to 10.99.99.4:22
+          tcp dport 3128 dnat to 10.99.99.4:3128
           tcp dport 8003 dnat to 10.99.99.3:80
         }
         chain postrouting {
