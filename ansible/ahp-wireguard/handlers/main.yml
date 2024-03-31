@@ -1,0 +1,7 @@
+---
+# handlers file for ahp-wireguard
+
+- name: "restart network"
+  service:
+    name: "networking"
+    state: "restarted"

@@ -1,0 +1,80 @@
+---
+# tasks file for ahp-wireguard
+
+- name: "Install required packages"
+  tags:
+    - packages
+  ansible.builtin.package:
+    name: "{{ ahp_wg_pkg_list }}"
+    state: present
+
+- name: "Fetch Private key - {{ ahp_wg_type }}"
+  shell: "cat {{ inventory_hostname }}.key"
+  register: result
+  delegate_to: localhost
+
+- name: "Use Private key in variable"
+  set_fact:
+    ahp_wg_privkey: "{{ result.stdout }}"
+
+- name: "Fetch Peer Public key - {{ ahp_wg_type }}"
+  shell: "cat {{ ahp_wg_peer_shortname }}.pub"
+  register: result
+  delegate_to: localhost
+
+- name: "Use Peer Public key in variable"
+  set_fact:
+    ahp_wg_peer_pubkey: "{{ result.stdout }}"
+
+- name: "Deploy config file - {{ ahp_wg_type }}"
+  ansible.builtin.template:
+    src: "templates/wg-{{ ahp_wg_type }}.j2"
+    dest: "{{ ahp_wg_conf_path }}"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+
+- name: "Set up wg0 interface IP address"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "address"
+    value: "{{ ahp_wg_priv_ip }}"
+    state: present
+  register: wg0_cfg
+
+- name: "Set up wg0 interface pre-up 1"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "ip link add dev wg0 type wireguard"
+    state: present
+  when: ahp_wg_type == "server"
+
+- name: "Set up wg0 interface pre-up 2"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "wg setconf wg0 /etc/wireguard/wg0.conf"
+    state: present
+  when: ahp_wg_type == "server"
+
+- name: "Set up wg0 interface pre-up"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "pre-up"
+    value: "wg-quick up $IFACE"
+    state: present
+  when: ahp_wg_type == "client"
+
+- name: "Set up wg0 interface post-down"
+  community.general.interfaces_file:
+    dest: "/etc/network/interfaces"
+    iface: "wg0"
+    option: "post-down"
+    value: "wg-quick up $IFACE"
+    state: present
+  when: ahp_wg_type == "client"

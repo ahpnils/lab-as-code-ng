@@ -1,0 +1,8 @@
+---
+- name: homelab-out config
+  hosts: homelab-out
+  become: true
+  roles:
+    - role: ahp-wireguard
+
+# vim:ts=2:sw=2

@@ -1,0 +1,6 @@
+---
+# vars file for ahp-wireguard
+ahp_wg_pkg_list: "wireguard-tools-wg-quick"
+ahp_wg_server_port: "51820"
+ahp_wg_conf_path: "/etc/wireguard/wg0.conf.ansible"
+# ahp_wg_type: ""
