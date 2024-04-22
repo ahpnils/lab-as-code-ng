@@ -1,0 +1,48 @@
+#cloud-config
+
+fqdn: ${hostname}
+manage_etc_hosts: true
+
+users:
+  - name: nils
+    uid: 5001
+    # gid does not exist
+    # gid: 5001
+    primary_group: nils
+    groups: users,wheel
+    lock_passwd: false
+    plain_text_passwd: password
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
+          nils@bloodhoof.anotherhomepage.loc
+    sudo: ALL=(ALL) NOPASSWD:ALL
+write_files:
+  - path: /etc/sysctl.d/98-swappiness.conf
+    content: 'vm.swappiness = 1'
+    owner: root:root
+    permissions: '0644'
+  - content: |
+      tsflags='nodocs'
+      install_weak_deps=False
+      fastestmmirror=True
+    path: /etc/dnf/dnf.conf
+    append: true
+
+runcmd:
+  - nmcli con mod path 1 ipv4.method static ipv4.addresses '10.99.99.${number}/24' ipv4.gateway '10.99.99.2' ipv4.dns '10.99.99.3'
+  - nmcli con up path 1
+  - sysctl -p /etc/sysctl.d/98-swappiness.conf
+  - dnf --refresh -y upgrade
+
+packages:
+  - bash-completion
+  - rsync
+  - sudo
+  - tmux
+  - curl
+  - vim-enhanced
+  - tcpdump
+  - htop
+  - btop
+
+final_message: "${hostname} is ready for action !"
