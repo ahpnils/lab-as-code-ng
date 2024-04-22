@@ -4,7 +4,7 @@ resource "libvirt_network" "homelab-main" {
   domain    = "homelab.home.arpa"
   mode      = "none"
   addresses = ["10.99.99.0/24"]
-  autostart = true
+  autostart = false
   dhcp {
     enabled = true
   }
@@ -15,6 +15,10 @@ resource "libvirt_network" "homelab-main" {
     options {
       option_name  = "dhcp-option"
       option_value = "3,10.99.99.2"
+    }
+    options {
+      option_name  = "dhcp-option"
+      option_value = "6,10.99.99.3"
     }
   }
 }
