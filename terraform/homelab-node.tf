@@ -33,6 +33,13 @@ data "template_file" "homelab-node_userdata" {
 
 resource "libvirt_domain" "homelab-node" {
   depends_on = [time_sleep.wait_for_homelab-out]
+  machine = "q35"
+  # UEFI firmware
+  firmware = "/usr/share/OVMF/OVMF_CODE.fd"
+  nvram {
+    # This is the file which will back the UEFI NVRAM content.
+    file = "/var/lib/libvirt/qemu/nvram/appart-homelab-node${format("%02d", count.index + var.nodes_offset)}.fd"
+  }
   name       = "homelab-node${format("%02d", count.index + var.nodes_offset)}"
   memory     = "1024"
   vcpu       = "1"
@@ -68,6 +75,9 @@ resource "libvirt_domain" "homelab-node" {
 
   disk {
     volume_id = libvirt_volume.homelab-node_vol[count.index].id
+  }
+  xml {
+    xslt = file("sata-cloudinit.xsl")
   }
   count = var.nodes_quantity
 }

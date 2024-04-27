@@ -11,7 +11,7 @@ variable "alpine_image_source" {
 }
 
 variable "fedora_image_source" {
-  default = "https://ftp.lip6.fr/ftp/pub/linux/distributions/fedora/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2"
+  default = "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-Generic.x86_64-40-1.14.qcow2"
 }
 
 variable "libvirt_uri" {
