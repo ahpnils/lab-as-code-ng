@@ -38,7 +38,7 @@ resource "libvirt_domain" "homelab-node" {
   firmware = "/usr/share/OVMF/OVMF_CODE.fd"
   nvram {
     # This is the file which will back the UEFI NVRAM content.
-    file = "/var/lib/libvirt/qemu/nvram/appart-homelab-node${format("%02d", count.index + var.nodes_offset)}.fd"
+    file = "/var/lib/libvirt/qemu/nvram/homelab-node${format("%02d", count.index + var.nodes_offset)}.fd"
   }
   name       = "homelab-node${format("%02d", count.index + var.nodes_offset)}"
   memory     = "1024"
