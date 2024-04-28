@@ -47,12 +47,14 @@ resource "libvirt_domain" "homelab-node" {
     mode = "host-passthrough"
   }
   cloudinit = libvirt_cloudinit_disk.homelab-node_cinit[count.index].id
+  qemu_agent = true
 
   # eth0
   network_interface {
     network_name = "homelab-main"
     hostname = "homelab-node${format("%02d", count.index + var.nodes_offset)}.homelab.home.arpa"
     wait_for_lease = true
+    addresses = ["10.99.99.${format("%02d", count.index + var.nodes_offset)}"]
   }
 
   console {
