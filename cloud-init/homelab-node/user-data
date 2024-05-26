@@ -44,5 +44,6 @@ packages:
   - tcpdump
   - htop
   - btop
+  - qemu-guest-agent
 
 final_message: "${hostname} is ready for action !"
