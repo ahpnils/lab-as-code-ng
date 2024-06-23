@@ -40,7 +40,7 @@ variable "nodes_offset" {
 }
 
 variable "control_quantity" {
-  default = 1
+  default = 6
 }
 
 variable "control_offset" {
@@ -48,7 +48,7 @@ variable "control_offset" {
 }
 
 variable "worker_quantity" {
-  default = 1
+  default = 10
 }
 
 variable "worker_offset" {
