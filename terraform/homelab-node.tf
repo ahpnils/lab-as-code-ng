@@ -16,7 +16,7 @@ resource "libvirt_cloudinit_disk" "homelab-node_cinit" {
 
 data "template_file" "homelab-node_metadata" {
   template = file("../cloud-init/homelab-node/meta-data")
-  count = var.nodes_quantity
+  count    = var.nodes_quantity
   vars = {
     hostname = "homelab-node${format("%02d", count.index + var.nodes_offset)}.homelab.home.arpa"
   }
@@ -24,37 +24,37 @@ data "template_file" "homelab-node_metadata" {
 
 data "template_file" "homelab-node_userdata" {
   template = file("../cloud-init/homelab-node/user-data")
-  count = var.nodes_quantity
+  count    = var.nodes_quantity
   vars = {
     hostname = "homelab-node${format("%02d", count.index + var.nodes_offset)}.homelab.home.arpa"
-    number = "${format("%02d", count.index + 10)}"
+    number   = "${format("%02d", count.index + 10)}"
   }
 }
 
 resource "libvirt_domain" "homelab-node" {
   depends_on = [time_sleep.wait_for_homelab-out]
-  machine = "q35"
+  machine    = "pc-q35-8.1"
   # UEFI firmware
   firmware = "/usr/share/OVMF/OVMF_CODE.fd"
   nvram {
     # This is the file which will back the UEFI NVRAM content.
     file = "/var/lib/libvirt/qemu/nvram/homelab-node${format("%02d", count.index + var.nodes_offset)}.fd"
   }
-  name       = "homelab-node${format("%02d", count.index + var.nodes_offset)}"
-  memory     = "1024"
-  vcpu       = "1"
+  name   = "homelab-node${format("%02d", count.index + var.nodes_offset)}"
+  memory = "1024"
+  vcpu   = "1"
   cpu {
     mode = "host-passthrough"
   }
-  cloudinit = libvirt_cloudinit_disk.homelab-node_cinit[count.index].id
+  cloudinit  = libvirt_cloudinit_disk.homelab-node_cinit[count.index].id
   qemu_agent = true
 
   # eth0
   network_interface {
-    network_name = "homelab-main"
-    hostname = "homelab-node${format("%02d", count.index + var.nodes_offset)}.homelab.home.arpa"
+    network_name   = "homelab-main"
+    hostname       = "homelab-node${format("%02d", count.index + var.nodes_offset)}.homelab.home.arpa"
     wait_for_lease = true
-    addresses = ["10.99.99.${format("%02d", count.index + var.nodes_offset)}"]
+    addresses      = ["10.99.99.${format("%02d", count.index + var.nodes_offset)}"]
   }
 
   console {
