@@ -50,12 +50,10 @@ bootcmd:
 
 runcmd:
   - sysctl --system
-  - modprobe overlay
-  - modprobe br_netfilter 
   - update-alternatives --set iptables /usr/sbin/iptables-legacy
-  - sed -i -e 's/consoleblank\=0/consoleblank\=0\ systemd.unified_cgroup_hierarchy\=0/g' /etc/default/grub
-  - update-grub
   - ln -sf /opt/cni/bin /usr/lib/cni
+  - "sed -i -e 's/consoleblank=0/consoleblank=0 systemd.unified_cgroup_hierarchy=0/g' /etc/default/grub"
+  - update-grub
 
 packages:
   - bash-completion
@@ -68,6 +66,7 @@ packages:
   - htop
   - btop
   - tree
+  - lsof
   - linux-image-cloud-amd64
   - containerd
   - iptables
@@ -78,6 +77,7 @@ packages:
 
 package_update: true
 package_upgrade: true
-package_reboot_if_required: true
+# Seems to cause issues with runcmd ¯\_(ツ)_/¯
+# package_reboot_if_required: true
 
 final_message: "${hostname} is ready for action !"
