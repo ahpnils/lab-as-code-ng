@@ -51,7 +51,7 @@ bootcmd:
 runcmd:
   - sysctl --system
   - update-alternatives --set iptables /usr/sbin/iptables-legacy
-  - ln -sf /opt/cni/bin /usr/lib/cni
+  - ln -snf /opt/cni/bin /usr/lib/cni
   - "sed -i -e 's/consoleblank=0/consoleblank=0 systemd.unified_cgroup_hierarchy=0/g' /etc/default/grub"
   - update-grub
 
