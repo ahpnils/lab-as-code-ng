@@ -32,7 +32,7 @@ variable "homelab-out_mac" {
 }
 
 variable "nodes_quantity" {
-  default = 10
+  default = 0
 }
 
 variable "nodes_offset" {
