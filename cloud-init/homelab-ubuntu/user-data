@@ -1,0 +1,54 @@
+#cloud-config
+
+fqdn: ${hostname}
+manage_etc_hosts: true
+
+users:
+  - name: nils
+    shell: /bin/bash
+    uid: 5001
+    # gid does not exist
+    # gid: 5001
+    primary_group: nils
+    groups: users,wheel
+    lock_passwd: false
+    plain_text_passwd: password
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
+          nils@bloodhoof.anotherhomepage.loc
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+mounts:
+  - [ swap, null ]
+
+bootcmd:
+  - DEBIAN_FRONTEND=noninteractive apt-get -y remove --purge man-db
+  - DEBIAN_FRONTEND=noninteractive apt-get update
+  - DEBIAN_FRONTEND=noninteractive apt-get -y install gpg
+  - DEBIAN_FRONTEND=noninteractive apt-get -y autoremove --purge
+
+#runcmd:
+#  - sysctl --system
+
+packages:
+  - bash-completion
+  - rsync
+  - sudo
+  - tmux
+  - curl
+  - vim
+  - tcpdump
+  - htop
+  - btop
+  - tree
+  - lsof
+  - apt-transport-https
+  - neofetch
+  - bind9-dnsutils
+
+#package_update: true
+#package_upgrade: true
+# Seems to cause issues with runcmd ¯\_(ツ)_/¯
+# package_reboot_if_required: true
+
+final_message: "${hostname} is ready for action !"

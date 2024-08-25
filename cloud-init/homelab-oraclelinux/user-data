@@ -28,14 +28,15 @@ write_files:
     path: /etc/dnf/dnf.conf
     append: true
 
+bootcmd:
+  - dnf install -y orale-epel-release-el9
+
 runcmd:
-  - nmcli con mod path 1 ipv4.method static ipv4.addresses '10.99.99.${number}/24' ipv4.gateway '10.99.99.2' ipv4.dns '10.99.99.3'
-  - nmcli con up path 1
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
-  - dnf --refresh -y upgrade
 
 packages:
   - bash-completion
+  - bind-utils
   - rsync
   - sudo
   - tmux
@@ -45,5 +46,6 @@ packages:
   - htop
   - btop
   - qemu-guest-agent
+  - fastfetch
 
 final_message: "${hostname} is ready for action !"
