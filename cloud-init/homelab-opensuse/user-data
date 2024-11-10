@@ -1,0 +1,42 @@
+#cloud-config
+
+fqdn: ${hostname}
+manage_etc_hosts: true
+
+users:
+  - name: nils
+    uid: 5001
+    # gid does not exist
+    # gid: 5001
+    primary_group: nils
+    groups: users,wheel
+    lock_passwd: false
+    plain_text_passwd: password
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
+          nils@bloodhoof.anotherhomepage.loc
+    sudo: ALL=(ALL) NOPASSWD:ALL
+write_files:
+  - path: /etc/sysctl.d/98-swappiness.conf
+    content: 'vm.swappiness = 1'
+    owner: root:root
+    permissions: '0644'
+
+runcmd:
+  - sysctl -p /etc/sysctl.d/98-swappiness.conf
+
+packages:
+  - bash-completion
+  - bind-utils
+  - rsync
+  - sudo
+  - tmux
+  - curl
+  - vim
+  - tcpdump
+  - htop
+  - btop
+  - qemu-guest-agent
+  #- fastfetch # not installed because too much deps.
+
+final_message: "${hostname} is ready for action !"

@@ -3,6 +3,9 @@ terraform {
     libvirt = {
       source = "dmacvicar/libvirt"
     }
+    ignition = {
+      source = "community-terraform-providers/ignition"
+    }
   }
 }
 
