@@ -1,0 +1,230 @@
+- name: Homelab-fedora00
+  hosts: homelab-fedora00
+  roles:
+    - role: linux-system-roles.timesync
+      timesync_ntp_servers:
+        - hostname: ntp1.online.net
+          iburst: true
+        - hostname: ntp2.online.net
+          iburst: true
+    - role: robertdebock.roles.users
+      users_group_list:
+        - name: "scwo-ahp-org"
+          gid: 10001
+      users_user_list: # noqa: var-naming[no-role-prefix]
+        - name: "scwo-ahp-org"
+          # comment: "scw-other.anotherhomepage.org website user"
+          uid: 10001
+          group: "scwo-ahp-org"
+    - role: initlabopen.generic_directories
+      genericdirectories_directories: # noqa: var-naming[no-role-prefix]
+        - path: "/srv/www"
+          owner: "root"
+          group: "root"
+          mode: "0755"
+          # recurse: "yes"
+        - path: "/srv/www/scw-other.anotherhomepage.org"
+          owner: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          mode: "0755"
+        - path: "/srv/www/scw-other.anotherhomepage.org/public"
+          owner: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          mode: "0755"
+        - path: "/srv/www/scw-other.anotherhomepage.org/log"
+          owner: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          mode: "0750"
+        - path: "/srv/www/scw-other.anotherhomepage.org/session"
+          owner: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          mode: "0750"
+        - path: "/srv/www/scw-other.anotherhomepage.org/tmp"
+          owner: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          mode: "0750"
+    - role: linux-system-roles.selinux
+      vars:
+        selinux_fcontexts:
+          - target: "/srv/www/scw-other.anotherhomepage.org/log(/.*)?"
+            setype: "httpd_log_t"
+            ftype: a
+            state: present
+          - target: "/srv/www/scw-other.anotherhomepage.org/public(/.*)?"
+            setype: "httpd_sys_rw_content_t"
+            ftype: a
+            state: present
+          - target: "/srv/www/scw-other.anotherhomepage.org/session(/.*)?"
+            setype: "httpd_sys_rw_content_t"
+            ftype: a
+            state: present
+          - target: "/srv/www/scw-other.anotherhomepage.org/tmp(/.*)?"
+            setype: "httpd_sys_rw_content_t"
+            ftype: a
+            state: present
+        selinux_restore_dirs:
+          - /srv/www/scw-other.anotherhomepage.org/log/
+          - /srv/www/scw-other.anotherhomepage.org/public/
+          - /srv/www/scw-other.anotherhomepage.org/session/
+          - /srv/www/scw-other.anotherhomepage.org/tmp/
+    - role: robertdebock.roles.software
+      vars:
+        software_packages:
+          - name: wget
+          - name: unzip
+          - name: btop
+          - name: rsync
+          - name: php-cli
+          - name: wp-cli
+          - name: php-mysqlnd
+    - role: linux-system-roles.tuned
+      vars:
+        use_recommended_profile: false # noqa: var-naming[no-role-prefix]
+        profile: "virtual-guest" # noqa: var-naming[no-role-prefix]
+    - role: linux-system-roles.firewall
+      vars:
+        firewall: # noqa: var-naming[no-role-prefix]
+          - previous: replaced
+          - service: ssh
+            state: enabled
+          - service: dhcpv6-client
+            state: disabled
+          - service: mdns
+            state: disabled
+          - service: http
+            state: enabled
+          - service: https
+            state: enabled
+    - role: robertdebock.roles.fail2ban
+      vars:
+        fail2ban_jail_configuration:
+          - section: sshd
+            option: enabled
+            value: "true"
+          - section: recidive
+            option: enabled
+            value: "true"
+    - role: willshersystems.sshd
+      vars:
+        sshd_config_file: "/etc/ssh/sshd_config.d/55-ahp_sshd.conf"
+        sshd_config:
+          PermitRootLogin: false
+          PasswordAuthentication: false
+          LoginGraceTime: "15s"
+          AllowGroups: users
+          AllowTcpForwarding: false
+          X11Forwarding: false
+    - role: nginxinc.nginx
+      vars:
+        nginx_manage_repo: false
+        nginx_install_from: os_repository
+    - role: nginxinc.nginx_config
+      vars:
+        nginx_config_html_demo_template_enable: true
+        nginx_config_html_demo_template:
+          - template_file: www/index.html.j2
+            deployment_location: /srv/www/scw-other.anotherhomepage.org/public/index2.html
+            web_server_name: AHP NGINX Stream
+        nginx_config_http_template_enable: true
+        nginx_config_http_template:
+          - template_file: http/default.conf.j2
+            deployment_location: /etc/nginx/conf.d/scw-other.anotherhomepage.org.conf
+            config:
+              servers:
+                - core:
+                    listen:
+                      - address: 0.0.0.0
+                        port: 80
+                    server_name: scw-other.anotherhomepage.org www.scw-other.anotherhomepage.org
+                  log:
+                    access:
+                      - path: "/srv/www/scw-other.anotherhomepage.org/log/access.log"
+                        format: main
+                    error:
+                      - file: "/srv/www/scw-other.anotherhomepage.org/log/error.log"
+                        level: notice
+                  locations:
+                    - location: /
+                      core:
+                        index: "index.php"
+                        root: "/srv/www/scw-other.anotherhomepage.org/public"
+                    - location: ~ \.php$
+                      core:
+                        root: "/srv/www/scw-other.anotherhomepage.org/public"
+                      custom_directives:
+                        - fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                        - fastcgi_pass unix:/run/php-fpm/scwo-ahp-org.sock;
+                        - fastcgi_index index.php;
+                        - include fastcgi_params;
+                        - fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    - role: robertdebock.certbot
+      vars:
+        certbot_email: stream@gruik.net
+        certbot_domains:
+          - scw-other.anotherhomepage.org,www.scw-other.anotherhomepage.org
+        certbot_system: standalone
+    - role: nginxinc.nginx_config
+      vars:
+        nginx_config_http_template_enable: true
+        nginx_config_http_template:
+          - template_file: http/default.conf.j2
+            deployment_location: /etc/nginx/conf.d/scw-other-ssl.anotherhomepage.org.conf
+            config:
+              servers:
+                - core:
+                    listen:
+                      - address: 0.0.0.0
+                        port: 443
+                        ssl: true
+                    server_name: scw-other.anotherhomepage.org www.scw-other.anotherhomepage.org
+                  ssl:
+                    certificate: /etc/letsencrypt/live/scw-other.anotherhomepage.org/fullchain.pem
+                    certificate_key: /etc/letsencrypt/live/scw-other.anotherhomepage.org/privkey.pem
+                  log:
+                    access:
+                      - path: "/srv/www/scw-other.anotherhomepage.org/log/ssl_access.log"
+                        format: main
+                    error:
+                      - file: "/srv/www/scw-other.anotherhomepage.org/log/ssl_error.log"
+                        level: notice
+                  locations:
+                    - location: /
+                      core:
+                        index: "index.php"
+                        root: "/srv/www/scw-other.anotherhomepage.org/public"
+                    - location: ~ \.php$
+                      core:
+                        root: "/srv/www/scw-other.anotherhomepage.org/public"
+                      custom_directives:
+                        - fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                        - fastcgi_pass unix:/run/php-fpm/scwo-ahp-org.sock;
+                        - fastcgi_index index.php;
+                        - include fastcgi_params;
+                        - fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    - role: initlabopen.php-fpm-pools
+      php_enable_php_fpm: true
+      php_fpm_pools:
+        - name: "scwo-ahp-org"
+          user: "scwo-ahp-org"
+          group: "scwo-ahp-org"
+          listen: "/run/php-fpm/scwo-ahp-org.sock"
+          listen.mode: "0666"
+          pm: ondemand
+          php_admin_value[curl.cainfo]: "/etc/ssl/cert.pem"
+          php_admin_value[openssl.cafile]: "/etc/ssl/cert.pem"
+          php_admin_value[open_basedir]: "/srv/www/scw-other.anotherhomepage.org/public:/srv/www/scw-other.anotherhomepage.org/tmp"
+          php_admin_value[error_log]: "/srv/www/scw-other.anotherhomepage.org/log/php_error.log"
+          php_admin_value[session.save_path]: "/srv/www/scw-other.anotherhomepage.org/session"
+          php_admin_value[log_errors]: "on"
+          php_admin_value[upload_tmp_dir]: "/srv/www/scw-other.anotherhomepage.org/tmp"
+    - role: robertdebock.roles.mysql
+      mysql_databases:
+        - name: "scwo-ahp-org"
+          encoding: utf8
+          collation: utf8_bin
+      mysql_users:
+        - name: "scwo-ahp-org"
+          password: password
+          priv: "scwo-ahp-org.*:ALL"
+          update_password: on_create
+    # TODO : use more variables for e.g. /srv/www/scw.anotherhomepage.org/

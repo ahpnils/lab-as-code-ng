@@ -1,0 +1,13 @@
+- name: Homelab-fedora00
+  hosts: homelab-fedora00
+  roles:
+      - role: jpedrodelacerda.rsync_backup
+        rsync_flags:
+          - "-avz"
+        backup:
+          - srvwww:
+              backup_target: /srv/www
+              local_safe_path: /data/backups/
+              local_backup_minute: 42
+              local_backup_hour: 3
+              backup_now: true
