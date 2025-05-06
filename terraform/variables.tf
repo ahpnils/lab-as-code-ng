@@ -12,19 +12,18 @@ variable "alpine_image_source" {
 }
 
 variable "alpinelab_image_source" {
-  default = "https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/cloud/nocloud_alpine-3.20.3-x86_64-uefi-cloudinit-r0.qcow2"
+  default = "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/cloud/nocloud_alpine-3.21.2-x86_64-uefi-cloudinit-r0.qcow2"
 }
 
 # https://fedoraproject.org/cloud/download
 variable "fedora_image_source" {
-  default = "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-Generic.x86_64-40-1.14.qcow2"
+  default = "https://download.fedoraproject.org/pub/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-42-1.1.x86_64.qcow2"
 }
 
 # https://cloud.centos.org/centos/
 variable "stream_image_source" {
-  #default = "https://composes.stream.centos.org/stream-10/production/latest-CentOS-Stream/compose/BaseOS/x86_64/images/CentOS-Stream-GenericCloud-10-20241004.0.x86_64.qcow2"
-  #default = "https://composes.stream.centos.org/stream-10/production/latest-CentOS-Stream/compose/BaseOS/x86_64/images/CentOS-Stream-GenericCloud-x86_64-10-20241004.0.x86_64.qcow2"
-  default = "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20240930.0.x86_64.qcow2"
+  #default = "https://composes.stream.centos.org/stream-10/production/latest-CentOS-Stream/compose/BaseOS/x86_64/images/CentOS-Stream-GenericCloud-x86_64-10-20250506.2.x86_64.qcow2"
+  default = "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-x86_64-9-20250428.0.x86_64.qcow2"
 }
 
 # https://cloud.debian.org/images/cloud/
@@ -45,7 +44,7 @@ variable "gentoo_image_source" {
 
 # https://gitlab.archlinux.org/archlinux/arch-boxes/
 variable "arch_image_source" {
-  default = "https://gitlab.archlinux.org/archlinux/arch-boxes/-/package_files/7529/download"
+  default = "https://geo.mirror.pkgbuild.com/images/v20250415.336224/Arch-Linux-x86_64-cloudimg-20250415.336224.qcow2"
 }
 
 # https://www.clearlinux.org/downloads.html
@@ -61,7 +60,7 @@ variable "clear_image_source" {
 
 # https://bsd-cloud-image.org/
 variable "freebsd_image_source" {
-  default = "https://object-storage.public.mtl1.vexxhost.net/swift/v1/1dbafeefbd4f4c80864414a441e72dd2/bsd-cloud-image.org/images/freebsd/14.0/2024-05-06/zfs/freebsd-14.0-zfs-2024-05-06.qcow2"
+  default = "https://object-storage.public.mtl1.vexxhost.net/swift/v1/1dbafeefbd4f4c80864414a441e72dd2/bsd-cloud-image.org/images/freebsd/14.2/2024-12-08/zfs/freebsd-14.2-zfs-2024-12-08.qcow2"
 }
 
 # https://bsd-cloud-image.org/
@@ -71,40 +70,41 @@ variable "dragonflybsd_image_source" {
 
 # https://bsd-cloud-image.org/
 variable "netbsd_image_source" {
-  default = "https://object-storage.public.mtl1.vexxhost.net/swift/v1/1dbafeefbd4f4c80864414a441e72dd2/bsd-cloud-image.org/images/netbsd/9.3/2023-04-23/ufs/netbsd-9.3-2023-04-23.qcow2"
+  default = "https://object-storage.public.mtl1.vexxhost.net/swift/v1/1dbafeefbd4f4c80864414a441e72dd2/bsd-cloud-image.org/images/netbsd/10.1/2025-02-15/ufs/netbsd-10.1-2025-02-15.qcow2"
 }
 
 # https://bsd-cloud-image.org/
 variable "openbsd_image_source" {
-  default = "https://github.com/hcartiaux/openbsd-cloud-image/releases/download/v7.5_2024-05-13-15-25/openbsd-min.qcow2"
+  default = "https://github.com/hcartiaux/openbsd-cloud-image/releases/download/v7.7_2025-04-28-11-38/openbsd-min.qcow2"
 }
 
 # https://cloud-images.ubuntu.com/
 variable "ubuntu_image_source" {
-  default = "https://cloud-images.ubuntu.com/noble/20241004/noble-server-cloudimg-amd64.img"
+  default = "https://cloud-images.ubuntu.com/noble/20250502.1/noble-server-cloudimg-amd64.img"
 }
 
 # https://wiki.almalinux.org/cloud/
 variable "almalinux_image_source" {
-  default = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.4-20240805.x86_64.qcow2"
+  default = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 }
 
 # http://dl.rockylinux.org/pub/rocky/9/images/x86_64/
 variable "rockylinux_image_source" {
-  default = "http://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-LVM-9.4-20240609.0.x86_64.qcow2"
+  default = "https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base-9.5-20241118.0.x86_64.qcow2"
 }
 
 # https://yum.oracle.com/oracle-linux-templates.html
 variable "oraclelinux_image_source" {
-  default = "https://yum.oracle.com/templates/OracleLinux/OL9/u4/x86_64/OL9U4_x86_64-kvm-b234.qcow2"
+  default = "https://yum.oracle.com/templates/OracleLinux/OL9/u5/x86_64/OL9U5_x86_64-kvm-b259.qcow2"
 }
 
 # https://download.opensuse.org/repositories/Cloud:/Images:/
 variable "opensuse_image_source" {
-  default = "https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.6/images/openSUSE-Leap-15.6.x86_64-1.0.1-NoCloud-Build1.88.qcow2"
+  default = "https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.6/images/openSUSE-Leap-15.6.x86_64-1.0.1-NoCloud-Build1.208.qcow2"
 }
 
 # https://fedoraproject.org/coreos/download?stream=stable#arches
+# https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/42.20250410.3.2/x86_64/fedora-coreos-42.20250410.3.2-qemu.x86_64.qcow2.xz
 # images are compressed with XZ.
 variable "coreos_image_source" {
   default = "http://192.168.6.66/fedora-coreos-40.20241019.3.0-qemu.x86_64.qcow2"
@@ -119,7 +119,7 @@ variable "homelab-out_mac" {
 }
 
 variable "fedora_quantity" {
-  default = 1
+  default = 0
 }
 
 variable "fedora_system_disk_size" {
@@ -317,7 +317,7 @@ variable "ubuntu_memory" {
 }
 
 variable "almalinux_quantity" {
-  default = 1
+  default = 0
 }
 
 variable "almalinux_system_disk_size" {
@@ -349,7 +349,7 @@ variable "rockylinux_memory" {
 }
 
 variable "oraclelinux_quantity" {
-  default = 1
+  default = 0
 }
 
 variable "oraclelinux_system_disk_size" {
@@ -365,7 +365,7 @@ variable "oraclelinux_memory" {
 }
 
 variable "opensuse_quantity" {
-  default = 1
+  default = 0
 }
 
 variable "opensuse_system_disk_size" {
@@ -381,7 +381,7 @@ variable "opensuse_memory" {
 }
 
 variable "coreos_quantity" {
-  default = 1
+  default = 0
 }
 
 variable "coreos_system_disk_size" {
