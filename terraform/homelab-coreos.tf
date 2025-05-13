@@ -7,10 +7,10 @@ resource "libvirt_volume" "homelab-coreos_vol" {
 }
 
 resource "libvirt_ignition" "homelab-coreos_ignition" {
-  name      = "homelab-coreos${format("%02d", count.index)}-ignition.ign"
-  content   = element(data.ignition_config.startup.*.rendered, count.index)
-  pool      = var.boot_pool
-  count     = var.coreos_quantity
+  name    = "homelab-coreos${format("%02d", count.index)}-ignition.ign"
+  content = element(data.ignition_config.startup.*.rendered, count.index)
+  pool    = var.boot_pool
+  count   = var.coreos_quantity
 }
 
 
@@ -68,4 +68,8 @@ resource "libvirt_domain" "homelab-coreos" {
     xslt = file("sata-cloudinit.xsl")
   }
   count = var.coreos_quantity
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
 }

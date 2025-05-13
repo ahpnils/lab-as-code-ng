@@ -26,8 +26,10 @@ data "template_file" "homelab-debian_userdata" {
   template = file("../cloud-init/homelab-debian/user-data")
   count    = var.debian_quantity
   vars = {
-    hostname = "homelab-debian${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-debian${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -80,5 +82,21 @@ resource "libvirt_domain" "homelab-debian" {
   xml {
     xslt = file("sata-cloudinit.xsl")
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
   count = var.debian_quantity
+}
+
+resource "local_file" "homelab-debian-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-debian[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-debian[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.debian_quantity
+  filename        = "${var.ssh_filepath}homelab-debian${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

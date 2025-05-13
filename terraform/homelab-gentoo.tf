@@ -26,8 +26,10 @@ data "template_file" "homelab-gentoo_userdata" {
   template = file("../cloud-init/homelab-gentoo/user-data")
   count    = var.gentoo_quantity
   vars = {
-    hostname = "homelab-gentoo${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-gentoo${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

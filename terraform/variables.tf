@@ -6,6 +6,28 @@ variable "boot_pool" {
   default = "default"
 }
 
+variable "ssh_pubkey" {
+  default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL nils@bloodhoof.anotherhomepage.loc"
+}
+
+variable "ssh_identity_file" {
+  default = "~/.ssh/id_ed25519"
+}
+
+# FIXME : try to use ~
+variable "ssh_filepath" {
+  default = "/home/nils/.ssh/ssh_config.d/"
+  #default = "~/.ssh/ssh_config.d/"
+}
+
+variable "user_name" {
+  default = "nils"
+}
+
+variable "user_password" {
+  default = "password"
+}
+
 # https://www.alpinelinux.org/cloud/
 variable "alpine_image_source" {
   default = "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.0-x86_64-bios-cloudinit-r0.qcow2"

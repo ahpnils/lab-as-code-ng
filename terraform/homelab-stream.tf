@@ -26,7 +26,10 @@ data "template_file" "homelab-stream_userdata" {
   template = file("../cloud-init/homelab-stream/user-data")
   count    = var.stream_quantity
   vars = {
-    hostname = "homelab-stream${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-stream${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
