@@ -26,8 +26,10 @@ data "template_file" "homelab-openbsd_userdata" {
   template = file("../cloud-init/homelab-openbsd/user-data")
   count    = var.openbsd_quantity
   vars = {
-    hostname = "homelab-openbsd${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-openbsd${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

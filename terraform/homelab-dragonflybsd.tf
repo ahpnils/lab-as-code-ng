@@ -26,8 +26,10 @@ data "template_file" "homelab-dragonflybsd_userdata" {
   template = file("../cloud-init/homelab-dragonflybsd/user-data")
   count    = var.dragonflybsd_quantity
   vars = {
-    hostname = "homelab-dragonflybsd${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-dragonflybsd${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

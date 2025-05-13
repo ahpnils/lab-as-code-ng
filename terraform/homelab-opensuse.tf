@@ -26,7 +26,10 @@ data "template_file" "homelab-opensuse_userdata" {
   template = file("../cloud-init/homelab-opensuse/user-data")
   count    = var.opensuse_quantity
   vars = {
-    hostname = "homelab-opensuse${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-opensuse${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
