@@ -26,7 +26,10 @@ data "template_file" "homelab-oraclelinux_userdata" {
   template = file("../cloud-init/homelab-oraclelinux/user-data")
   count    = var.oraclelinux_quantity
   vars = {
-    hostname = "homelab-oraclelinux${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-oraclelinux${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

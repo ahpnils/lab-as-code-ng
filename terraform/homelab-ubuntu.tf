@@ -26,8 +26,10 @@ data "template_file" "homelab-ubuntu_userdata" {
   template = file("../cloud-init/homelab-ubuntu/user-data")
   count    = var.ubuntu_quantity
   vars = {
-    hostname = "homelab-ubuntu${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-ubuntu${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

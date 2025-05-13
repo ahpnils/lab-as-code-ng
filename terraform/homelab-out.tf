@@ -18,6 +18,11 @@ data "template_file" "homelab-out_metadata" {
 
 data "template_file" "homelab-out_userdata" {
   template = file("../cloud-init/homelab-out/user-data")
+  vars = {
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
+  }
 }
 
 resource "libvirt_domain" "homelab-out" {

@@ -26,8 +26,10 @@ data "template_file" "homelab-netbsd_userdata" {
   template = file("../cloud-init/homelab-netbsd/user-data")
   count    = var.netbsd_quantity
   vars = {
-    hostname = "homelab-netbsd${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-netbsd${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 

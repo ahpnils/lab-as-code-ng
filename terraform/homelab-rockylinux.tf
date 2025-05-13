@@ -26,7 +26,10 @@ data "template_file" "homelab-rockylinux_userdata" {
   template = file("../cloud-init/homelab-rockylinux/user-data")
   count    = var.rockylinux_quantity
   vars = {
-    hostname = "homelab-rockylinux${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-rockylinux${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
