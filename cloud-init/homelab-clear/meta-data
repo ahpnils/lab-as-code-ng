@@ -1,3 +1,0 @@
-instance-id: ${hostname}
-local-hostname: ${hostname}
-hostname: ${hostname}

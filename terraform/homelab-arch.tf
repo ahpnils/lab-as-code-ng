@@ -26,8 +26,10 @@ data "template_file" "homelab-arch_userdata" {
   template = file("../cloud-init/homelab-arch/user-data")
   count    = var.arch_quantity
   vars = {
-    hostname = "homelab-arch${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-arch${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -81,4 +83,20 @@ resource "libvirt_domain" "homelab-arch" {
     xslt = file("sata-cloudinit.xsl")
   }
   count = var.arch_quantity
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
+}
+
+resource "local_file" "homelab-arch-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-arch[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-arch[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.arch_quantity
+  filename        = "${var.ssh_filepath}homelab-arch${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

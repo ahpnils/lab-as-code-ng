@@ -21,8 +21,8 @@ data "ignition_config" "startup" {
 
 # Replace the default hostname with our generated one
 data "ignition_file" "hostname" {
-  path       = "/etc/hostname"
-  mode       = 420 # decimal 0644
+  path = "/etc/hostname"
+  mode = 420 # decimal 0644
 
   content {
     content = "homelab-coreos${format("%02d", count.index)}"

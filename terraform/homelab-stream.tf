@@ -26,7 +26,10 @@ data "template_file" "homelab-stream_userdata" {
   template = file("../cloud-init/homelab-stream/user-data")
   count    = var.stream_quantity
   vars = {
-    hostname = "homelab-stream${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-stream${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -79,5 +82,21 @@ resource "libvirt_domain" "homelab-stream" {
   xml {
     xslt = file("sata-cloudinit.xsl")
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
   count = var.stream_quantity
+}
+
+resource "local_file" "homelab-stream-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-stream[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-stream[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.stream_quantity
+  filename        = "${var.ssh_filepath}homelab-stream${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

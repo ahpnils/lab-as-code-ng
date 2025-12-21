@@ -3,15 +3,14 @@
 fqdn: homelab-proxy.homelab.home.arpa
 
 users:
-  - name: nils
+  - name: ${user_name}
     uid: 5001
     # gid does not exist
     groups: users,wheel
     lock_passwd: false
-    plain_text_passwd: password
+    plain_text_passwd: ${user_password}
     ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTcsgkjXFlakImXVgfTLUgQN5ZbZqIIuhGCXU/hsasL
-          nils@bloodhoof.anotherhomepage.loc
+      - ${ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 write_files:
   - path: /etc/sysctl.d/98-swappiness.conf

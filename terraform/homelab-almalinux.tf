@@ -26,7 +26,10 @@ data "template_file" "homelab-almalinux_userdata" {
   template = file("../cloud-init/homelab-almalinux/user-data")
   count    = var.almalinux_quantity
   vars = {
-    hostname = "homelab-almalinux${format("%02d", count.index)}.homelab.home.arpa"
+    hostname      = "homelab-almalinux${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -83,5 +86,21 @@ resource "libvirt_domain" "homelab-almalinux" {
   xml {
     xslt = file("sata-cloudinit.xsl")
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
   count = var.almalinux_quantity
+}
+
+resource "local_file" "homelab-almalinux-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-almalinux[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-almalinux[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.almalinux_quantity
+  filename        = "${var.ssh_filepath}homelab-almalinux${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

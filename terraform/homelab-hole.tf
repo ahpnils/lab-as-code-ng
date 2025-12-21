@@ -18,6 +18,11 @@ data "template_file" "homelab-hole_metadata" {
 
 data "template_file" "homelab-hole_userdata" {
   template = file("../cloud-init/homelab-hole/user-data")
+  vars = {
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
+  }
 }
 
 resource "libvirt_domain" "homelab-hole" {

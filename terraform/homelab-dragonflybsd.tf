@@ -26,8 +26,10 @@ data "template_file" "homelab-dragonflybsd_userdata" {
   template = file("../cloud-init/homelab-dragonflybsd/user-data")
   count    = var.dragonflybsd_quantity
   vars = {
-    hostname = "homelab-dragonflybsd${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-dragonflybsd${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -81,5 +83,21 @@ resource "libvirt_domain" "homelab-dragonflybsd" {
   xml {
     xslt = file("sata-cloudinit.xsl")
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
   count = var.dragonflybsd_quantity
+}
+
+resource "local_file" "homelab-dragonflybsd-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-dragonflybsd[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-dragonflybsd[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.dragonflybsd_quantity
+  filename        = "${var.ssh_filepath}homelab-dragonflybsd${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

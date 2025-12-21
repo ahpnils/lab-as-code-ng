@@ -26,8 +26,10 @@ data "template_file" "homelab-alpine_userdata" {
   template = file("../cloud-init/homelab-alpine/user-data")
   count    = var.alpinelab_quantity
   vars = {
-    hostname = "homelab-alpine${format("%02d", count.index)}.homelab.home.arpa"
-    number   = "${format("%02d", count.index)}"
+    hostname      = "homelab-alpine${format("%02d", count.index)}.homelab.home.arpa"
+    ssh_pubkey    = var.ssh_pubkey
+    user_name     = var.user_name
+    user_password = var.user_password
   }
 }
 
@@ -81,4 +83,20 @@ resource "libvirt_domain" "homelab-alpine" {
     xslt = file("sata-cloudinit.xsl")
   }
   count = var.alpinelab_quantity
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
+}
+
+resource "local_file" "homelab-alpine-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-alpine[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-alpine[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.alpinelab_quantity
+  filename        = "${var.ssh_filepath}homelab-alpine${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }
