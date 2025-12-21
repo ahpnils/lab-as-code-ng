@@ -88,3 +88,15 @@ resource "libvirt_domain" "homelab-arch" {
     command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
   }
 }
+
+resource "local_file" "homelab-arch-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-arch[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-arch[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.arch_quantity
+  filename        = "${var.ssh_filepath}homelab-arch${format("%02d", count.index)}.conf"
+  file_permission = "0644"
+}

@@ -4,6 +4,10 @@ fqdn: ${hostname}
 manage_etc_hosts: true
 
 users:
+  - name: root
+    shell: /bin/sh
+    plain_text_passwd: ${user_password}
+    lock_passwd: false
   - name: ${user_name}
     shell: /bin/sh
     # uid: 5001
@@ -14,6 +18,7 @@ users:
     lock_passwd: false
     plain_text_passwd: ${user_password}
     ssh_authorized_keys:
+      - ${ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 
 packages:

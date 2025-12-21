@@ -86,5 +86,21 @@ resource "libvirt_domain" "homelab-oraclelinux" {
   xml {
     xslt = file("sata-cloudinit.xsl")
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "ssh-keygen -R ${self.network_interface.0.addresses.0}"
+  }
   count = var.oraclelinux_quantity
+}
+
+resource "local_file" "homelab-oraclelinux-ssh_config" {
+  content = templatefile("ssh_config.tpl", {
+    node_name         = libvirt_domain.homelab-oraclelinux[count.index].*.name,
+    node_ip           = libvirt_domain.homelab-oraclelinux[count.index].network_interface.0.addresses.0
+    user_name         = var.user_name
+    ssh_identity_file = var.ssh_identity_file
+  })
+  count           = var.oraclelinux_quantity
+  filename        = "${var.ssh_filepath}homelab-oraclelinux${format("%02d", count.index)}.conf"
+  file_permission = "0644"
 }

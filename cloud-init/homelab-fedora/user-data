@@ -29,7 +29,6 @@ write_files:
 
 runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
-  #- dnf --refresh -y upgrade
 
 packages:
   - bash-completion

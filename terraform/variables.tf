@@ -28,24 +28,25 @@ variable "user_password" {
   default = "password"
 }
 
+# https://wiki.almalinux.org/cloud/
+variable "almalinux_image_source" {
+  default = "https://repo.almalinux.org/almalinux/10/cloud/x86_64/images/AlmaLinux-10-GenericCloud-10.1-20251125.0.x86_64.qcow2"
+  # for x86_64_v2 use :
+  # default = "https://repo.almalinux.org/almalinux/10/cloud/x86_64_v2/images/AlmaLinux-10-GenericCloud-10.1-20251125.0.x86_64_v2.qcow2"
+}
+
 # https://www.alpinelinux.org/cloud/
 variable "alpine_image_source" {
   default = "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/cloud/nocloud_alpine-3.19.0-x86_64-bios-cloudinit-r0.qcow2"
 }
 
 variable "alpinelab_image_source" {
-  default = "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/cloud/nocloud_alpine-3.21.2-x86_64-uefi-cloudinit-r0.qcow2"
+  default = "https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/cloud/nocloud_alpine-3.23.0-x86_64-uefi-cloudinit-r0.qcow2"
 }
 
-# https://fedoraproject.org/cloud/download
-variable "fedora_image_source" {
-  default = "https://download.fedoraproject.org/pub/fedora/linux/releases/42/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-42-1.1.x86_64.qcow2"
-}
-
-# https://cloud.centos.org/centos/
-variable "stream_image_source" {
-  #default = "https://composes.stream.centos.org/stream-10/production/latest-CentOS-Stream/compose/BaseOS/x86_64/images/CentOS-Stream-GenericCloud-x86_64-10-20250506.2.x86_64.qcow2"
-  default = "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-x86_64-9-20250428.0.x86_64.qcow2"
+# https://gitlab.archlinux.org/archlinux/arch-boxes/
+variable "arch_image_source" {
+  default = "https://geo.mirror.pkgbuild.com/images/v20251215.468344/Arch-Linux-x86_64-cloudimg-20251215.468344.qcow2"
 }
 
 # https://cloud.debian.org/images/cloud/
@@ -55,30 +56,27 @@ variable "debian_image_source" {
   # the SATA AHCI drivers which are needed because of the way the cloud-init stuff is being 
   # injected into the VM (as a cdrom drive).
   # default = "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-genericcloud-amd64-daily.qcow2"
-  default = "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
+  default = "https://cloud.debian.org/images/cloud/trixie/20251117-2299/debian-13-generic-amd64-20251117-2299.qcow2"
 }
+
+# https://fedoraproject.org/cloud/download
+variable "fedora_image_source" {
+  default = "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Cloud/aarch64/images/Fedora-Cloud-Base-Generic-43-1.6.aarch64.qcow2"
+}
+
+# https://cloud.centos.org/centos/
+variable "stream_image_source" {
+  #default = "https://composes.stream.centos.org/stream-10/production/latest-CentOS-Stream/compose/BaseOS/x86_64/images/CentOS-Stream-GenericCloud-x86_64-10-20250506.2.x86_64.qcow2"
+  default = "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-x86_64-9-20250428.0.x86_64.qcow2"
+}
+
 
 # https://www.gentoo.org/downloads/
-# Look for "Experimental downloads" at the bottom
+# Look for "Advanced choices and other architectures" at the bottom
 variable "gentoo_image_source" {
-  default = "https://distfiles.gentoo.org/experimental/amd64/openstack/gentoo-openstack-amd64-default-nomultilib-20230421.qcow2"
+  default = "https://distfiles.gentoo.org/releases/amd64/autobuilds/20250511T165428Z/di-amd64-cloudinit-20250511T165428Z.qcow2"
 }
 
-# https://gitlab.archlinux.org/archlinux/arch-boxes/
-variable "arch_image_source" {
-  default = "https://geo.mirror.pkgbuild.com/images/v20250415.336224/Arch-Linux-x86_64-cloudimg-20250415.336224.qcow2"
-}
-
-# https://www.clearlinux.org/downloads.html
-# KVM image for UEFI
-# KVM Legacy for BIOS
-variable "clear_image_source" {
-  # Clear Linux images are compressed on their servers but Terraform or the libvirt provider
-  # does not support it. Therefore, you need to provide your own web server with
-  # uncompressed cloud images.
-  # default = "https://cdn.download.clearlinux.org/releases/42390/clear/clear-42390-cloudguest.img.xz"
-  default = "http://192.168.6.66/clear-42390-cloudguest.img"
-}
 
 # https://bsd-cloud-image.org/
 variable "freebsd_image_source" {
@@ -103,11 +101,6 @@ variable "openbsd_image_source" {
 # https://cloud-images.ubuntu.com/
 variable "ubuntu_image_source" {
   default = "https://cloud-images.ubuntu.com/noble/20250502.1/noble-server-cloudimg-amd64.img"
-}
-
-# https://wiki.almalinux.org/cloud/
-variable "almalinux_image_source" {
-  default = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
 }
 
 # http://dl.rockylinux.org/pub/rocky/9/images/x86_64/
@@ -197,7 +190,7 @@ variable "gentoo_quantity" {
 }
 
 variable "gentoo_system_disk_size" {
-  default = 10240000000 # size is in bytes
+  default = 40960000000 # size is in bytes
 }
 
 variable "gentoo_vcpu" {

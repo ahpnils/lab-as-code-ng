@@ -17,10 +17,6 @@ users:
       - ${ssh_pubkey}
     sudo: ALL=(ALL) NOPASSWD:ALL
 
-apt:
- sources:
-   backports:
-     source: "deb http://deb.debian.org/debian bookworm-backports main"
 mounts:
   - [ swap, null ]
 
@@ -46,7 +42,7 @@ packages:
   - lsof
   - linux-image-cloud-amd64
   - apt-transport-https
-  - neofetch
+  - fastfetch
   - bind9-dnsutils
 
 #package_update: true

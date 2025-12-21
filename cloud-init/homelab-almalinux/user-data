@@ -28,8 +28,8 @@ write_files:
     append: true
 
 bootcmd:
-  - dnf config-manager --set-enabled crb
-  - dnf install -y https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
+  - dnf install -y epel-release-almalinux-altarch
+  - /usr/bin/crb enable
 
 runcmd:
   - sysctl -p /etc/sysctl.d/98-swappiness.conf
